@@ -4,7 +4,6 @@
 import sqlite3
 import os
 
-# КРИТИЧЕСКАЯ УЯЗВИМОСТЬ 1: debug=True в production коде
 DEBUG = False
 # КРИТИЧЕСКАЯ УЯЗВИМОСТЬ 2: слабый секретный ключ
 SECRET_KEY = 'simple-password-123'  # Слишком простой
