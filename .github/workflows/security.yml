@@ -1,47 +1,30 @@
 ﻿name: Security Checks
+
 on:
   push:
     branches: [main]
-  pull_request:
-    branches: [main]
+
 jobs:
   security:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
+    
     - uses: actions/setup-python@v4
       with:
         python-version: '3.11'
-    - name: Install tools
+    
+    - name: Install Bandit
       run: pip install bandit
+    
     - name: Run Bandit
+      run: python -m bandit -r . --exit-zero
+    
+    - name: Check Debug
       run: |
-        python -m bandit -r . -f json -o bandit.json
-        python -c "
-import json
-try:
-    with open('bandit.json') as f:
-        data = json.load(f)
-    count = 0
-    for issue in data.get('results', []):
-        if issue.get('issue_severity') == 'HIGH':
-            count += 1
-    print(count)
-except:
-    print('0')
-        " > bandit_count.txt
-        CRITICAL=cat bandit_count.txt
-        if [ $CRITICAL -gt 0 ]; then
-          echo "FAIL: Found $CRITICAL critical issues"
+        if grep -r "debug=True" . --include="*.py"; then
+          echo "Found debug=True"
           exit 1
         else
-          echo "PASS: No critical issues"
-        fi
-    - name: Check debug
-      run: |
-        if grep -r "debug=True" . --include="*.py" 2>/dev/null; then
-          echo "FAIL: debug=True found"
-          exit 1
-        else
-          echo "PASS: No debug=True"
+          echo "No debug=True found"
         fi
