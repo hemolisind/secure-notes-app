@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Регистрация</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>Регистрация</h1>
+    
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="flash-{{ category }}"><strong>{{ message | escape_html }}</strong></div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        <div>
+            {{ form.username.label }}<br>
+            {{ form.username(size=32) }}<br>
+            {% if form.username.errors %}
+                {% for error in form.username.errors %}
+                    <span class="error">{{ error | escape_html }}</span><br>
+                {% endfor %}
+            {% endif %}
+        </div>
+        <div>
+            {{ form.password.label }}<br>
+            {{ form.password(size=32) }}<br>
+            {% if form.password.errors %}
+                {% for error in form.password.errors %}
+                    <span class="error">{{ error | escape_html }}</span><br>
+                {% endfor %}
+            {% endif %}
+        </div>
+        <div>
+            {{ form.confirm_password.label }}<br>
+            {{ form.confirm_password(size=32) }}<br>
+            {% if form.confirm_password.errors %}
+                {% for error in form.confirm_password.errors %}
+                    <span class="error">{{ error | escape_html }}</span><br>
+                {% endfor %}
+            {% endif %}
+        </div>
+        <div>
+            <input type="submit" value="Зарегистрироваться">
+        </div>
+    </form>
+    <p>Уже есть аккаунт? <a href="{{ url_for('login') }}">Войдите</a></p>
+</body>
+</html>
